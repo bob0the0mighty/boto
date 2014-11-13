@@ -67,6 +67,8 @@ class MTurkConnection(AWSQueryConnection):
 
     def get_account_balance(self):
         """
+        Returns a ResultSet containing a single Price object with current 
+        account balance information.
         """
         params = {}
         return self._process_request('GetAccountBalance', params,
@@ -418,6 +420,14 @@ class MTurkConnection(AWSQueryConnection):
 
     def approve_assignment(self, assignment_id, feedback=None):
         """
+        Approves assignment for payment.
+        Will return an exception if there are inadequate funds and cancel the
+        approval.
+        
+        assignment_id: 30 character long string
+        
+        feedback: optional feedback string, max length 1024 characters
+        
         """
         params = {'AssignmentId': assignment_id}
         if feedback:
@@ -426,6 +436,12 @@ class MTurkConnection(AWSQueryConnection):
 
     def reject_assignment(self, assignment_id, feedback=None):
         """
+        Rejects assignment for payment
+        
+        assignment_id: 30 character long string
+        
+        feedback: optional feedback string, max length 1024 characters
+        
         """
         params = {'AssignmentId': assignment_id}
         if feedback:
@@ -434,6 +450,14 @@ class MTurkConnection(AWSQueryConnection):
 
     def approve_rejected_assignment(self, assignment_id, feedback=None):
         """
+        Approves previously rejected assignment for payment.
+        Only works on assignments rejected less than 30 days ago.
+        Returns an exception if the assignment is not rejected or there are
+        insufficient funds to pay for the assignment.
+        
+        assignment_id: 30 character long string
+        
+        feedback: optional feedback string, max length 1024 characters
         """
         params = {'AssignmentId': assignment_id}
         if feedback:
@@ -457,6 +481,12 @@ class MTurkConnection(AWSQueryConnection):
 
     def get_hit(self, hit_id, response_groups=None):
         """
+        Returns a HIT object
+        
+        hit_id: HIT id. 30 character long string
+        
+        response_groups: The response groups you want returned. a list of strings
+        
         """
         params = {'HITId': hit_id}
         # Handle optional response groups argument
